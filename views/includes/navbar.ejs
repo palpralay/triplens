@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+    <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand" href="/">
+            <img src="/svg/triplens.svg" alt="Wandelast" height="40" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/listing">All listings</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/listing/new">Add New Listing</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/signup">SignUp</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+        padding: 0.75rem 0;
+    }
+
+    .navbar-brand img {
+        height: 40px;
+        width: auto;
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem !important;
+        font-weight: 500;
+        color: #333 !important;
+        transition: color 0.2s ease;
+        font-size: 0.95rem;
+    }
+
+    .nav-link:hover {
+        color: #007bff !important;
+    }
+
+    .navbar-toggler {
+        padding: 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+        outline: none;
+    }
+
+    @media (max-width: 991px) {
+        .navbar-collapse {
+            background-color: white;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-link {
+            padding: 0.75rem 1rem !important;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .nav-item:last-child .nav-link {
+            border-bottom: none;
+        }
+    }
+</style>
