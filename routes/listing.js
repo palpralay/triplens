@@ -27,7 +27,7 @@ router.get(
 //--------------------------------------------------------------------------------
 
 //--------New route to create a listing-------------------------------------------
-router.get("/new", isLoggedIn, (req, res) => {
+router.get("/new", (req, res) => {
   res.render("listing/new.ejs");
 });
 
@@ -79,7 +79,6 @@ router.put(
 //----show route to show details of a specific listing----------------------------
 router.get(
   "/:id",
-  isLoggedIn,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id).populate("reviews");

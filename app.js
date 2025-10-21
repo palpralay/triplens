@@ -14,7 +14,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js");
-const {isLoggedIn} = require("./middleware.js");
+const { isLoggedIn } = require("./middleware.js");
 
 //----session configuration------------------------------------------------
 const sessionConfig = {
@@ -30,7 +30,7 @@ const sessionConfig = {
 
 //-------------------------------connected to mongoDB-----------------------------
 const MONGO_URL = "mongodb://127.0.0.1:27017/triplens";
-async function main() { 
+async function main() {
   await mongoose.connect(MONGO_URL);
 }
 main()
@@ -40,8 +40,6 @@ main()
   .catch((err) => {
     console.log(err);
   });
-
-
 
 //-------------------------------middleware---------------------------------------
 app.use(express.static(path.join(__dirname, "public")));
@@ -58,12 +56,12 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
 //--------flash msg---------------------------------------------------------------
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-   res.locals.currentUser = req.user;
+  res.locals.currentUser = req.user;
+  res.locals.currUser = req.user;
   next();
 });
 
@@ -71,31 +69,21 @@ app.use("/", userRouter);
 app.use("/listing", listingRouter);
 app.use("/listing/:id/reviews", reviewRoutes);
 
-
-
-
-
-
-
 //-------------------------------RESTful routes-----------------------------------
 app.get("/", (req, res) => {
   res.send("working");
 });
-
 
 //-----------------------------handling 404 error---------------------------------
 app.use((req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
 });
 
-
 //-----------------------------error handling-------------------------------------
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong" } = err;
   res.render("error.ejs", { statusCode, message });
 });
-
-
 
 //-------------------------------server listening---------------------------------
 app.listen(8080, () => {
