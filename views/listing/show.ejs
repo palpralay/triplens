@@ -33,6 +33,10 @@
         <div class="listing-card-body">
           <p class="listing-card-text"><%= listing.description %></p>
           <p class="listing-card-text">
+            <strong>Owned by:</strong> <%= listing.owner.username.toUpperCase()
+            %>
+          </p>
+          <p class="listing-card-text">
             <strong>Price:</strong> &#8377; <%=
             listing.price.toLocaleString("en-IN") %>
           </p>
@@ -42,6 +46,8 @@
           <p class="listing-card-text">
             <strong>Country:</strong> <%= listing.country %>
           </p>
+
+         <% if(currentUser && listing.owner && currentUser._id.equals(listing.owner._id)){ %>
           <div
             style="
               display: flex;
@@ -64,9 +70,17 @@
               style="display: inline"
               class="dlt-btn3"
             >
-              <button type="submit" class="btn2 btn-3" style="color: red !important;">Delete Listing</button>
+              <button
+                type="submit"
+                class="btn2 btn-3"
+                style="color: red !important"
+              >
+                Delete Listing
+              </button>
             </form>
           </div>
+          <% } %>
+
         </div>
       </div>
 
@@ -80,6 +94,7 @@
         "
       ></div>
 
+      <% if(currUser) {%>
       <form
         method="POST"
         action="/listing/<%= listing._id %>/reviews"
@@ -230,6 +245,9 @@
           Submit Review
         </button>
       </form>
+      <% } %>
+
+
       <div
         style="
           width: 90%;
@@ -267,7 +285,7 @@
             class="card"
           >
             <div style="margin-bottom: 5px">
-              <p style="color: #333; font-size: 16px">Username</p>
+              <p style="color: #333; font-size: 16px; font-weight: 600;">@<%= review.author.username %></p>
             </div>
             <div style="margin-bottom: 5px">
               <strong style="color: #333; font-size: 16px">Rating:</strong>
@@ -318,24 +336,6 @@
         <% } %>
       </div>
     </div>
-    <script>
-      (() => {
-        "use strict";
-        const forms = document.querySelectorAll(".needs-validation");
-        Array.from(forms).forEach((form) => {
-          form.addEventListener(
-            "submit",
-            (event) => {
-              if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              form.classList.add("was-validated");
-            },
-            false
-          );
-        });
-      })();
-    </script>
+    <script src="/javascript/script.js"></script>
   </body>
 </html>

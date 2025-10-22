@@ -1,22 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync");
-const { reviewSchema, listingSchema } = require("../schema.js");
-const ExpressError = require("../utils/expressError.js");
 const Listing = require("../models/listing.js");
 const { isLoggedIn } = require("../middleware.js");
-//-------Listing validation middleware-------------------------------------------
-const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    let errMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(404, errMsg);
-  } else {
-    next();
-  }
-};
+const { isOwner } = require("../middleware.js");
+const { validateListing } = require("../middleware.js");
 
-//----index route to show all listings---------------------------------------------
+//----show all listings---------
 router.get(
   "/",
   wrapAsync(async (req, res) => {
@@ -24,30 +14,30 @@ router.get(
     res.render("listing/index", { allListing });
   })
 );
-//--------------------------------------------------------------------------------
 
-//--------New route to create a listing-------------------------------------------
-router.get("/new", (req, res) => {
+//----create a listing----------
+router.get("/new", isLoggedIn, (req, res) => {
   res.render("listing/new.ejs");
 });
 
 router.post(
   "/",
   isLoggedIn,
-  validateListing, 
+  validateListing,
   wrapAsync(async (req, res, next) => {
     let newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "New Listing Created!");
     res.redirect("/listing");
   })
 );
-//--------------------------------------------------------------------------------
 
-//-----Edit route to edit a specific listing---------------------------------------
+//-----Edit route---------------
 router.get(
   "/:id/edit",
   isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id);
@@ -59,41 +49,55 @@ router.get(
   })
 );
 
-//-----Update route to update a specific listing-----------------------------------
+//-----Update route-------------
 router.put(
   "/:id",
   isLoggedIn,
+  isOwner,
   validateListing,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     if (req.body.listing.image && typeof req.body.listing.image === "string") {
       req.body.listing.image = { url: req.body.listing.image };
     }
+    let listing = await Listing.findById(id);
+
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
     req.flash("success", "Listing Updated Successfully!");
     res.redirect(`/listing/${id}`);
   })
 );
-//--------------------------------------------------------------------------------
 
-//----show route to show details of a specific listing----------------------------
+//----show route-------------
 router.get(
   "/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
+    const listing = await Listing.findById(id)
+      .populate("reviews")
+      .populate("owner")
+      .populate({
+        path: "reviews",
+        populate: {
+          path: "author"
+        },
+      });
     if (!listing) {
       req.flash("error", "Listing not found!");
       return res.redirect("/listing");
     }
-    res.render("listing/show", { listing });
+    res.render("listing/show", {
+      listing,
+      currUser: req.user,
+    });
   })
 );
 
-//-----Delete route to delete a specific listing-----------------------------------
+//-----Delete route----------------
 router.delete(
   "/:id",
   isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
@@ -102,6 +106,5 @@ router.delete(
     res.redirect("/listing");
   })
 );
-//--------------------------------------------------------------------------------
 
 module.exports = router;

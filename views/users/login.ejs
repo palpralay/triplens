@@ -41,7 +41,6 @@
               class="btn-close btn-close2"
               data-bs-dismiss="alert"
               aria-label="Close"
-             
             ></button>
           </div>
           <% } %>
@@ -126,25 +125,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script>
-      // Bootstrap validation
-      (function () {
-        "use strict";
-        const forms = document.querySelectorAll(".needs-validation");
-        Array.from(forms).forEach(function (form) {
-          form.addEventListener(
-            "submit",
-            function (event) {
-              if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-              }
-              form.classList.add("was-validated");
-            },
-            false
-          );
-        });
-      })();
-    </script>
+    <script src="/javascript/script.js"></script>
   </body>
 </html>
