@@ -1,7 +1,7 @@
 <% layout('layouts/boilerplate') %>
 
 <div class="container mt-5 mb-5">
-  <h2 class="mb-5 text-center fw-bold">All Listings</h2>
+  <h2 class="mb-5 text-center fw-bold" style="color: #ff6600">All Listings</h2>
 
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
     <% for (let listing of allListing) { %>
@@ -21,11 +21,16 @@
           />
         </div>
         <div class="card-body d-flex flex-column p-3">
-          <h5 class="card-title mb-2 text-truncate" title="<%= listing.title %>">
+          <h5
+            class="card-title mb-2 text-truncate"
+            title="<%= listing.title %>"
+          >
             <%= listing.title %>
           </h5>
           <p class="price-tag mb-0 mt-auto">
-            <span class="fw-bold text-dark">&#8377;<%= listing.price.toLocaleString('en-IN') %></span>
+            <span class="fw-bold text-dark"
+              >&#8377;<%= listing.price.toLocaleString('en-IN') %></span
+            >
             <span class="text-muted">/night</span>
           </p>
         </div>
@@ -34,4 +39,3 @@
     <% } %>
   </div>
 </div>
-
