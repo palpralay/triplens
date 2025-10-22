@@ -94,7 +94,7 @@
         "
       ></div>
 
-    <% if(currUser && listing.owner && !currUser._id.equals(listing.owner._id)) {%>
+    <% if(currUser) {%>
       <form
         method="POST"
         action="/listing/<%= listing._id %>/reviews"

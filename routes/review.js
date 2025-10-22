@@ -6,9 +6,6 @@ const Listing = require("../models/listing");
 const { validateReview, isReviewAuthor } = require("../middleware");
 const { isLoggedIn } = require("../middleware");
 
-
-
-
 // ------- Add Review -------
 router.post(
   "/",
@@ -39,6 +36,11 @@ router.delete(
   isReviewAuthor,
   wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
+    const review = await reviews.findById(reviewId);
+    if (!review) {
+      req.flash("error", "Review not found!");
+      return res.redirect(`/listing/${id}`);
+    }
     console.log("Delete request - Listing ID:", id, "Review ID:", reviewId);
 
     // Pull reference from listing
