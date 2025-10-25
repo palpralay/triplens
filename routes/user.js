@@ -38,12 +38,18 @@ router.get("/login", (req, res) => {
 
 router.post(
   "/login",
+  (req, res, next) => {
+    console.log("Login attempt:", req.body.username);
+    next();
+  },
   savedRedirectUrl,
   passport.authenticate("local", {
     failureRedirect: "/login",
     failureFlash: true,
+    failureMessage: true
   }),
-  async (req, res) => {
+  (req, res) => {
+    console.log("Login successful for:", req.user.username);
     req.flash("success", "Welcome back!");
     res.redirect(res.locals.redirectUrl || "/listing");
   }
