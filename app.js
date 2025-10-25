@@ -2,6 +2,7 @@
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
+
 //------------------ Import Modules ------------------
 const express = require("express");
 const app = express();
@@ -27,12 +28,9 @@ const upload = multer({ dest: "uploads/" });
 //------------------ Database Connection ------------------
 const dbUrl = process.env.ATLASDB_URL;
 
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("Connected to database"))
-.catch((err) => console.log("DB Connection Error:", err));
+mongoose.connect(dbUrl)
+  .then(() => console.log("Connected to database"))
+  .catch((err) => console.log("DB Connection Error:", err));
 
 //------------------ EJS & Middleware ------------------
 app.engine("ejs", ejsMate);
@@ -50,7 +48,7 @@ const store = mongoStore.create({
   crypto: {
     secret: process.env.SECRET,
   },
-  touchAfter: 24 * 3600, // time period in seconds
+  touchAfter: 24 * 3600,
 });
 
 store.on("error", function (e) {
@@ -59,13 +57,13 @@ store.on("error", function (e) {
 
 const sessionConfig = {
   store: store,
-  secret: process.env.SECRET ,
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, 
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
@@ -94,7 +92,7 @@ app.use("/", userRouter);
 app.use("/listing", listingRouter);
 app.use("/listing/:id/reviews", reviewRoutes);
 
-// Add this in app.js before error handlers
+//------------------ Health Check ------------------
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
@@ -104,7 +102,7 @@ app.use((req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
 });
 
-//------------------ General Error Handling ---------------
+//------------------ General Error Handling ------------------
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong" } = err;
   res.status(statusCode).render("error.ejs", { statusCode, message });
