@@ -50,7 +50,7 @@ app.use(methodOverride("_method"));
 const store = mongoStore.create({
   mongoUrl: dbUrl,
   crypto: {
-    secret: process.env.SECRET || "devsecret123",
+    secret: process.env.SECRET,
   },
   touchAfter: 24 * 3600, // time period in seconds
 });
@@ -61,7 +61,7 @@ store.on("error", function (e) {
 
 const sessionConfig = {
   store: store,
-  secret: process.env.SECRET || "devsecret123",
+  secret: process.env.SECRET ,
   resave: false,
   saveUninitialized: true,
   cookie: {
