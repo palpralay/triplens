@@ -2,7 +2,13 @@
 
 <body>
   <h3>Create a New Listing</h3>
-  <form method="POST" action="/listing" novalidate class="needs-validation">
+  <form
+    method="POST"
+    action="/listing"
+    novalidate
+    class="needs-validation"
+    enctype="multipart/form-data"
+  >
     <div>
       <label for="title" class="form-label">Title</label>
       <input
@@ -12,9 +18,7 @@
         class="form-control"
         required
       />
-      <div class="invalid-feedback">
-        Please provide a valid title.
-      </div>
+      <div class="invalid-feedback">Please provide a valid title.</div>
     </div>
     <div>
       <label for="description" class="form-label">Description</label>
@@ -24,16 +28,11 @@
         class="form-control"
         required
       ></textarea>
-
     </div>
+
     <div>
-      <label for="image" class="form-label">Image URL</label>
-      <input
-        name="listing[image][url]"
-        placeholder="Enter Image URL/Link"
-        type="text"
-        class="form-control"
-      />
+      <label for="image" class="form-label">Upload Listing Image</label>
+      <input name="listing[image]" type="file" class="form-control" />
     </div>
     <div class="row-fields">
       <div>
@@ -44,9 +43,7 @@
           class="form-control"
           required
         />
-        <div class="invalid-feedback">
-          Please provide a valid price.
-        </div>
+        <div class="invalid-feedback">Please provide a valid price.</div>
       </div>
       <div>
         <label for="country" class="form-label">Country</label>
@@ -57,9 +54,7 @@
           class="form-control"
           required
         />
-        <div class="invalid-feedback">
-          Please provide a valid country.
-        </div>
+        <div class="invalid-feedback">Please provide a valid country.</div>
       </div>
     </div>
     <div>
@@ -71,9 +66,7 @@
         class="form-control"
         required
       />
-      <div class="invalid-feedback">
-        Please provide a valid location.
-      </div>
+      <div class="invalid-feedback">Please provide a valid location.</div>
     </div>
     <button class="btn btn-primary main-btn">Add</button>
   </form>

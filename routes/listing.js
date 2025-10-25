@@ -6,6 +6,14 @@ const { isLoggedIn } = require("../middleware.js");
 const { isOwner } = require("../middleware.js");
 const { validateListing } = require("../middleware.js");
 
+const multer = require("multer");
+const { storage, cloudinary } = require("../cloudeConfig.js");
+const upload = multer({ storage });
+
+const mbxGeocoading = require("@mapbox/mapbox-sdk/services/geocoding");
+const mapToken = process.env.MAP_TOKEN;
+const geocoadingClient = mbxGeocoading({ accessToken: mapToken });
+
 //----show all listings---------
 router.get(
   "/",
@@ -23,13 +31,29 @@ router.get("/new", isLoggedIn, (req, res) => {
 router.post(
   "/",
   isLoggedIn,
+  upload.single("listing[image]"),
   validateListing,
-  wrapAsync(async (req, res, next) => {
-    let newListing = new Listing(req.body.listing);
-    newListing.owner = req.user._id;
+  wrapAsync(async (req, res) => {
+    const response = await geocoadingClient
+      .forwardGeocode({
+        query: req.body.listing.location,
+        limit: 1,
+      })
+      .send();
+    console.log(response.body.features[0].geometry);
+
+    let url = req.file.path;
+    let filename = req.file.filename;
+    const newListing = new Listing({
+      ...req.body.listing,
+      owner: req.user._id,
+    });
+    newListing.image = { url, filename };
+    newListing.geometry = response.body.features[0].geometry;
+    
     await newListing.save();
-    req.flash("success", "New Listing Created!");
-    res.redirect("/listing");
+    req.flash("success", "Successfully created a listing!");
+    res.redirect(`/listing/${newListing._id}`);
   })
 );
 
@@ -54,15 +78,23 @@ router.put(
   "/:id",
   isLoggedIn,
   isOwner,
+  upload.single("listing[image]"),
   validateListing,
   wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    if (req.body.listing.image && typeof req.body.listing.image === "string") {
-      req.body.listing.image = { url: req.body.listing.image };
-    }
-    let listing = await Listing.findById(id);
+    const { id } = req.params;
 
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+    const listing = await Listing.findById(id);
+
+    Object.assign(listing, req.body.listing);
+
+    if (req.file) {
+      listing.image = {
+        url: req.file.path,
+        filename: req.file.filename,
+      };
+    }
+
+    await listing.save();
     req.flash("success", "Listing Updated Successfully!");
     res.redirect(`/listing/${id}`);
   })
@@ -79,7 +111,7 @@ router.get(
       .populate({
         path: "reviews",
         populate: {
-          path: "author"
+          path: "author",
         },
       });
     if (!listing) {

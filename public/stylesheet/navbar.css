@@ -14,7 +14,6 @@
 
 .nav-link {
   background-color: #ffffffcf !important;
-
   padding: 0.5rem 1rem !important;
   font-weight: 500 !important;
   color: #333 !important;
@@ -49,3 +48,33 @@
     border-bottom: none;
   }
 }
+
+/* 🔍 Isolate the search bar area */
+.container-navbar,
+.container-navbar * {
+  all: unset;         /* reset all inherited global styles */
+  box-sizing: border-box;
+  display: revert;    /* revert default display (so input, button behave normally) */
+}
+
+.btn-search {
+  background-color: #ffae00;
+  color: white;
+  border-radius: 50px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-search i{
+  display: inline;
+}
+
+.search-input {
+     border-radius: 50px!important;
+     padding: 0.5rem 3rem!important;
+  
+}
+

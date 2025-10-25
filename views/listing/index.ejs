@@ -1,7 +1,53 @@
 <% layout('layouts/boilerplate') %>
 
-<div class="container mt-5 mb-5">
-  <h2 class="mb-5 text-center fw-bold" style="color: #ff6600">All Listings</h2>
+
+
+<div class="container mb-5">
+  <!-- <h2 class="mb-5 text-center fw-bold" style="color: #ff6600">All Listings</h2> -->
+  <div class="filter-container">
+    <button id="slideLeft" class="slide-btn">‹</button>
+
+    <div id="filters">
+      <div class="filter">
+        <i class="fa-solid fa-fire"></i>
+        <p class="filter-text">Trending</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-bed"></i>
+        <p class="filter-text">Beds</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-volcano"></i>
+        <p class="filter-text">Mountain</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-chess"></i>
+        <p class="filter-text">Castle</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-person-swimming"></i>
+        <p class="filter-text">Amazing Pool</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-tent"></i>
+        <p class="filter-text">Camping</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-tree"></i>
+        <p class="filter-text">Nature</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-tractor"></i>
+        <p class="filter-text">Farm</p>
+      </div>
+      <div class="filter">
+        <i class="fa-solid fa-snowflake"></i>
+        <p class="filter-text">Snow</p>
+      </div>
+    </div>
+
+    <button id="slideRight" class="slide-btn">›</button>
+  </div>
 
   <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
     <% for (let listing of allListing) { %>
@@ -39,3 +85,27 @@
     <% } %>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filters = document.getElementById('filters');
+    const slideLeft = document.getElementById('slideLeft');
+    const slideRight = document.getElementById('slideRight');
+
+    if (slideLeft && slideRight && filters) {
+      slideLeft.addEventListener('click', function() {
+        filters.scrollBy({
+          left: -200,
+          behavior: 'smooth'
+        });
+      });
+
+      slideRight.addEventListener('click', function() {
+        filters.scrollBy({
+          left: 200,
+          behavior: 'smooth'
+        });
+      });
+    }
+  });
+</script>

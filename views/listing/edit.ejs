@@ -5,6 +5,7 @@
   action="/listing/<%= listing._id %>?_method=PUT"
   novalidate
   class="needs-validation"
+  enctype="multipart/form-data"
 >
   <div>
     <label for="title" class="form-label">Title</label>
@@ -24,18 +25,38 @@
     >
   </div>
   <div>
-    <label for="Image" class="form-label">Image URL</label>
-
-    <input
-      name="listing[image][url]"
-      value="<%= listing.image.url %>"
-      type="text"
-      class="form-control"
-    />
+    <label for="Image" class="form-label">Upload New Image</label>
+    <input name="listing[image]" type="file" class="form-control" />
   </div>
+  <div class="mb-3 text-center">
+    <label for="image" class="form-label fw-semibold">Current Image</label>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      "
+      onmouseover="this.style.transform='scale(1.05)'"
+      onmouseout="this.style.transform='scale(1)'"
+    >
+      <img
+        src="<%= listing.image.url %>"
+        alt="Listing Image"
+        class="img-fluid"
+        style="
+          max-height: 200px;
+          width: 300px;
+          object-fit: cover;
+          border-radius: 15px !important;
+        "
+      />
+    </div>
+  </div>
+
   <div>
     <label for="price" class="form-label">Price</label>
-
     <input
       name="listing[price]"
       value="<%= listing.price %>"
