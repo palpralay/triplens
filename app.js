@@ -27,7 +27,7 @@ const upload = multer({ dest: "uploads/" });
 
 //------------------ Database Connection ------------------
 const dbUrl = process.env.ATLASDB_URL;
-
+// const MONGO_URL = "mongodb://127.0.0.1:27017/triplens";
 mongoose.connect(dbUrl)
   .then(() => console.log("Connected to database"))
   .catch((err) => console.log("DB Connection Error:", err));
