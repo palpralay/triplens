@@ -2,8 +2,6 @@
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-console.log("Session secret:", process.env.SECRET);
-
 //------------------ Import Modules ------------------
 const express = require("express");
 const app = express();
@@ -27,7 +25,7 @@ const userRouter = require("./routes/user.js");
 const upload = multer({ dest: "uploads/" });
 
 //------------------ Database Connection ------------------
-const dbUrl = process.env.ATLASDB_URL || "mongodb://127.0.0.1:27017/triplens";
+const dbUrl = process.env.ATLASDB_URL;
 
 mongoose.connect(dbUrl, {
   useNewUrlParser: true,
@@ -66,8 +64,8 @@ const sessionConfig = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    // secure: true, // enable in production with HTTPS
-    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+    secure: process.env.NODE_ENV === 'production',
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7, 
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
@@ -96,12 +94,17 @@ app.use("/", userRouter);
 app.use("/listing", listingRouter);
 app.use("/listing/:id/reviews", reviewRoutes);
 
+// Add this in app.js before error handlers
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 //------------------ 404 Error Handling ------------------
 app.use((req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
 });
 
-//------------------ General Error Handling ------------------
+//------------------ General Error Handling ---------------
 app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong" } = err;
   res.status(statusCode).render("error.ejs", { statusCode, message });
