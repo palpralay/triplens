@@ -57,6 +57,73 @@ router.post(
   })
 );
 
+//--------------------------------------------------------------------------------------------------
+// Suggestions endpoint for autocomplete
+router.get(
+  "/suggestions",
+  wrapAsync(async (req, res) => {
+    const { q } = req.query;
+    
+    if (!q || q.trim() === "") {
+      return res.json([]);
+    }
+
+    const suggestions = await Listing.find({
+      $or: [
+        { title: { $regex: q, $options: "i" } },
+        { location: { $regex: q, $options: "i" } },
+        { country: { $regex: q, $options: "i" } }
+      ]
+    })
+    .limit(5)
+    .select('title location country');
+
+    res.json(suggestions);
+  })
+);
+
+// Add this BEFORE the "/:id" route to avoid conflicts
+router.get(
+  "/search",
+  wrapAsync(async (req, res) => {
+    const { q } = req.query;
+    
+    if (!q || q.trim() === "") {
+      req.flash("error", "Please enter a search term");
+      return res.redirect("/listing");
+    }
+
+    try {
+      // Use MongoDB text search for better performance
+      const searchResults = await Listing.find(
+        { $text: { $search: q } },
+        { score: { $meta: "textScore" } }
+      ).sort({ score: { $meta: "textScore" } });
+      res.render("listing/index", { 
+        allListing: searchResults,
+        searchQuery: q 
+      });
+    } catch (error) {
+      console.error("Search error:", error);
+      // Fallback to regex search if text index not available
+      const searchResults = await Listing.find({
+        $or: [
+          { title: { $regex: q, $options: "i" } },
+          { location: { $regex: q, $options: "i" } },
+          { country: { $regex: q, $options: "i" } },
+          { description: { $regex: q, $options: "i" } }
+        ]
+      });
+
+      res.render("listing/index", { 
+        allListing: searchResults,
+        searchQuery: q 
+      });
+    }
+  })
+);
+//-----------------------------------------------------------------------------------------------------------------
+
 //-----Edit route---------------
 router.get(
   "/:id/edit",

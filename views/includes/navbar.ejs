@@ -31,12 +31,14 @@
       </ul>
 
       <div class="container-navbar" style="width: 30%;">
-        <form class="d-flex search-form mx-auto" role="search">
+        <form class="d-flex search-form mx-auto" role="search" method="get" action="/listing/search">
           <input
             class="form-control me-2 search-input"
             type="search"
             placeholder="Search Destination"
             aria-label="Search"
+            name="q"
+            value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
           />
           <button class="btn-search" type="submit">
             <i class="fa-solid fa-magnifying-glass"></i>

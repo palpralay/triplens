@@ -35,6 +35,15 @@ const listingSchema = new schema({
   },
 });
 
+// Add text index for better search performance
+listingSchema.index({ 
+  title: 'text', 
+  location: 'text', 
+  country: 'text', 
+  description: 'text' 
+});
+// -------------------------------------------------
+
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
     await Review.deleteMany({ _id: { $in: listing.reviews } });
