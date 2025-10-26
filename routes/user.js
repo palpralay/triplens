@@ -51,7 +51,9 @@ router.post(
   (req, res) => {
     console.log("Login successful for:", req.user.username);
     req.flash("success", "Welcome back!");
-    res.redirect(res.locals.redirectUrl || "/listing");
+    const redirectUrl = res.locals.redirectUrl || "/listing";
+    delete req.session.redirectUrl;
+    res.redirect(redirectUrl);
   }
 );
 
