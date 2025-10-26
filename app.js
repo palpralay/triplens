@@ -43,6 +43,11 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
+// Ensure secure cookies survive behind a proxy/CDN in production
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
+
 //------------------ Session Configuration ------------------
 const store = mongoStore.create({
   mongoUrl: dbUrl,
